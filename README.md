@@ -3,7 +3,7 @@ Dump vector tiles to GeoJSON from remote URLs or local system files.
 ## Installation
 
 ```
-npm install -g @mapbox/vt2geojson
+npm install -g jjhembd/vt2geojson
 ```
 
 ## Usage
@@ -26,9 +26,7 @@ vt2geojson({
 vt2geojson({
     uri: './local/file/buffer.mvt',
     layer: 'layer_name',
-    z: 9,
-    x: 150,
-    y: 194
+    size: 512
 }, function (err, result) {
     if (err) throw err;
     console.log(result); // => GeoJSON FeatureCollection
@@ -42,9 +40,7 @@ Usage: vt2geojson [options] URI
 
 Options:
   -l, --layer  include only the specified layer
-  -x           tile x coordinate (normally inferred from the URI)
-  -y           tile y coordinate (normally inferred from the URI)
-  -z           tile z coordinate (normally inferred from the URI)
+  -size        pixel size of the rendered tile
   -h, --help   Show help  [boolean]
 
 Examples:

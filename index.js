@@ -1,6 +1,6 @@
 'use strict';
 
-var vt = require('vector-tile');
+var vt = require('vector-tile-js');
 var request = require('request');
 var Protobuf = require('pbf');
 var format = require('util').format;
@@ -12,17 +12,17 @@ module.exports = function(args, callback) {
 
     if (!args.uri) return callback(new Error('No URI found. Please provide a valid URI to your vector tile.'));
 
-    // handle zxy stuffs
-    if (args.x === undefined || args.y === undefined || args.z === undefined) {
-        var zxy = args.uri.match(/\/(\d+)\/(\d+)\/(\d+)/);
-        if (!zxy || zxy.length < 4) {
-            return callback(new Error(format("Could not determine tile z, x, and y from %s; specify manually with -z <z> -x <x> -y <y>", JSON.stringify(args.uri))));
-        } else {
-            args.z = zxy[1];
-            args.x = zxy[2];
-            args.y = zxy[3];
-        }
-    }
+    if (args.size === undefined) args.size = 512;
+//    if (args.x === undefined || args.y === undefined || args.z === undefined) {
+//        var zxy = args.uri.match(/\/(\d+)\/(\d+)\/(\d+)/);
+//        if (!zxy || zxy.length < 4) {
+//            return callback(new Error(format("Could not determine tile z, x, and y from %s; specify manually with -z <z> -x <x> -y <y>", JSON.stringify(args.uri))));
+//        } else {
+//            args.z = zxy[1];
+//            args.x = zxy[2];
+//            args.y = zxy[3];
+//        }
+//    }
 
     var parsed = url.parse(args.uri);
     if (parsed.protocol && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
@@ -79,7 +79,8 @@ function readTile(args, buffer, callback) {
         var layer = tile.layers[layerID];
         if (layer) {
             for (var i = 0; i < layer.length; i++) {
-                var feature = layer.feature(i).toGeoJSON(args.x, args.y, args.z);
+                //var feature = layer.feature(i).toGeoJSON(args.x, args.y, args.z);
+                var feature = layer.feature(i).toGeoJSON(args.size);
                 if (layers.length > 1) feature.properties.vt_layer = layerID;
                 collection.features.push(feature);
             }
